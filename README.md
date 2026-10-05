@@ -2,6 +2,8 @@
 
 複数の為替レートを入力に、USD/JPYの5分後の方向を検証する実験用システム。
 現在は最初の段階として、GMOコインの公開APIからのレート収集とSQLite保存に対応しています。
+MySQL 8.0以上への保存も選択できます。DB・ユーザーの作成と接続手順は
+[MySQLセットアップ](config/MYSQL_SETUP.md)を参照してください（実MySQLへの単発保存を確認済み）。
 予測・答え合わせ・Web UI・売買シミュレーションは今後の実装です。詳細は [PLAN.md](PLAN.md)。
 
 ## 起動
@@ -21,6 +23,7 @@ PYTHONPATH=src python3 -m currency_judge --db data/experiment.sqlite3 --interval
 ```
 
 PCのスリープ・電源断中は収集できません。再起動時には既存DBへ追記します。
+UbuntuでPC起動時から自動収集するには、[systemdサービスの導入手順](deploy/README.md)を使用します。
 失敗時は最大300秒まで待機時間を延ばして再試行します。単発取得の失敗は終了コード1です。
 
 ## 保存データ
@@ -38,7 +41,32 @@ sqlite3 -header -column data/currency_judge.sqlite3 'SELECT symbol,bid,ask,quali
 
 SQLiteはWALモードです。稼働中のバックアップにはSQLiteのバックアップ機能を使用してください。
 
-## テスト
+## Ubuntu / VS Codeでの開発
+
+Python 3.12以上とVS Codeで、Macと同じソースコードを使って開発できます。
+Macの仮想環境はコピーせず、Ubuntu側で作り直します。
+
+```sh
+# 現段階は標準ライブラリだけなのでpipなしで作成可能
+python3 -m venv --without-pip .venv
+PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
+code .
+```
+
+MySQL用依存を導入する際にpipがなければ、Ubuntuの `python3.12-venv` を
+インストールして `python3 -m venv .venv` でpip付き環境を作成します。
+
+VS Codeの推奨拡張は公式Codex（`openai.chatgpt`）とPython（`ms-python.python`）です。
+Codexのサイドバーを開き、必要ならChatGPTアカウントでサインインしてください。
+Pythonインタープリターは `.venv/bin/python` を選択します。
+テストビューでunittestを実行でき、実行とデバッグの「為替レートを1回取得」で単発取得できます。
+
+開発方針は `AGENTS.md`、進捗と次の作業は `PLAN.md` に記録されています。
+Mac側の会話にしかない要件は別途引き継いでください。
+過去の収集データはGit管理対象外の `data/` にあるため、必要ならMacから別途移行します。
+稼働中のSQLiteの移行には、上記のバックアップ機能を使用してください。
+
+## テスト実行
 
 ```sh
 PYTHONPATH=src python3 -m unittest discover -s tests -v

@@ -1,0 +1,24 @@
+[Unit]
+Description=Currency Judge GMO FX collector
+Wants=network-online.target mysql.service
+After=network-online.target mysql.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=takeshi
+WorkingDirectory=/home/takeshi/ドキュメント/projects/currency-judge
+Environment=PYTHONPATH=/home/takeshi/ドキュメント/projects/currency-judge/src
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/takeshi/ドキュメント/projects/currency-judge/.venv/bin/python -m currency_judge --mysql-config /home/takeshi/ドキュメント/projects/currency-judge/config/mysql.cnf --interval 10
+Restart=always
+RestartSec=15
+KillSignal=SIGINT
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

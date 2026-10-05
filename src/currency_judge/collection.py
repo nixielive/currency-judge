@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from typing import Protocol
 from urllib.request import Request, urlopen
 
 ENDPOINT = "https://forex-api.coin.z.com/public/v1/ticker"
@@ -138,7 +139,13 @@ class Store:
             )
 
 
-def collect_once(store: Store, fetch=fetch_ticker) -> list[Quote]:
+class ObservationStore(Protocol):
+    def save(self, started: datetime, payload: dict, quotes: list[Quote]) -> int: ...
+
+    def record_error(self, started: datetime, error: str): ...
+
+
+def collect_once(store: ObservationStore, fetch=fetch_ticker) -> list[Quote]:
     started = datetime.now(UTC)
     try:
         payload, received = fetch()

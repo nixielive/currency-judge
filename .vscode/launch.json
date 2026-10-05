@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "為替レートを1回取得",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "currency_judge",
+      "args": ["--once"],
+      "cwd": "${workspaceFolder}",
+      "env": {"PYTHONPATH": "${workspaceFolder}/src"},
+      "console": "integratedTerminal"
+    }
+  ]
+}

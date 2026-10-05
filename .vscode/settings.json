@@ -1,0 +1,8 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.testing.unittestEnabled": true,
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestArgs": ["-v", "-s", "tests", "-p", "test_*.py"],
+  "python.envFile": "${workspaceFolder}/.vscode/python.env",
+  "python.analysis.extraPaths": ["${workspaceFolder}/src"]
+}
