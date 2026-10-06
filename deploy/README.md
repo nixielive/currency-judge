@@ -50,3 +50,21 @@ SELECT symbol, quality, received_at FROM quotes ORDER BY id DESC LIMIT 6;
 ```
 
 再起動後もログと上記の時刻が進むことを確認してください。
+
+## 電源接続中に蓋を閉じても収集する
+
+BIOS変更は不要です。Ubuntuのlogind設定を追加します。
+
+```sh
+sudo install -D -m 644 deploy/60-currency-judge-lid.conf /etc/systemd/logind.conf.d/60-currency-judge-lid.conf
+```
+
+保存後、Ubuntuを再起動して反映します。電源接続中は蓋を閉じてもスリープせず、
+バッテリー使用中はスリープします（ドック・外部画面接続時は従来どおりスリープしません）。
+PC再起動後に収集サービスの状態とログを確認してください。
+
+元の動作へ戻すには次のファイルを削除し、再起動します。
+
+```sh
+sudo rm /etc/systemd/logind.conf.d/60-currency-judge-lid.conf
+```
